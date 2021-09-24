@@ -1,0 +1,26 @@
+﻿Übergeben wird 
+	* der Tag und 
+	* eine Liste mit Checkins
+	damit die Arbeitszeit-Daten berechnet werden können.
+	
+	Foldende Information wird geliefert
+		-> Sollarbeitszeit
+		-> Sollpausenzeit
+		-> Geleistete Arbeitszeit
+		-> Geleistete Pausenzeit
+		-> Fehlende Arbeitszeit
+		-> Fehlende Pausenzeit
+		-> Status (Aktuell arbeitend)
+		-> Zeitpunkt ab dem man Nachhause gehen kann
+
+	-> Für den Tag alle Vorgaben abholen
+		-> Sollarbeitszeit
+		-> Sollpause
+
+	-> Checkins sortieren
+	-> Arbeitszeiten berechnen
+		-> IDX mod 2 = 1
+	-> Pausen berechnen
+		-> IDX mod 2 = 0
+	-> Mitarbeiter noch aktiv?
+		->count mod 2 == 1

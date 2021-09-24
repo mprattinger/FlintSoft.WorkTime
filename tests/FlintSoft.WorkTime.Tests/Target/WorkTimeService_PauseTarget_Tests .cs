@@ -7,13 +7,13 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 
-namespace FlintSoft.WorkTime.Tests
+namespace FlintSoft.WorkTime.Tests.Target
 {
-    public class WorkTimeServiceTests
+    public class WorkTimeService_PauseTarget_Tests
     {
         private readonly IWorkTimeService _workTimeService;
 
-        public WorkTimeServiceTests()
+        public WorkTimeService_PauseTarget_Tests()
         {
             var cfg = new WorkTimeConfig
             {
@@ -31,7 +31,6 @@ namespace FlintSoft.WorkTime.Tests
             _workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
         }
 
-        #region PauseTargetTests
         [Fact]
         public void PauseTarget30MinWhenMoreThen6()
         {
@@ -108,62 +107,5 @@ namespace FlintSoft.WorkTime.Tests
             var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(45)), true);
             res.Should().Be(TimeSpan.FromMinutes(30));
         }
-        #endregion
-
-        #region WorkTimeForDay
-        [Fact]
-        public void WorkTimeNormalDay2209ShouldBeWed820()
-        {
-            var res = _workTimeService.GetWorkTimeForDay(new DateTime(2021, 9, 22));
-            res.Should().BeOfType<WorkTimeDayConfig>();
-            res.WorkDay.Should().Be(DayOfWeek.Wednesday);
-            res.TargetWorkTime.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(12)));
-        }
-
-        [Fact]
-        public void WorkTimeNormalDay2409ShouldBeFr542()
-        {
-            var res = _workTimeService.GetWorkTimeForDay(new DateTime(2021, 9, 24));
-            res.Should().BeOfType<WorkTimeDayConfig>();
-            res.WorkDay.Should().Be(DayOfWeek.Friday);
-            res.TargetWorkTime.Should().Be(TimeSpan.FromHours(5).Add(TimeSpan.FromMinutes(42)));
-        }
-
-        [Fact]
-        public void WorkTimeWeekend2509ShouldBeSa0()
-        {
-            var res = _workTimeService.GetWorkTimeForDay(new DateTime(2021, 9, 25));
-            res.Should().BeOfType<WorkTimeDayConfig>();
-            res.WorkDay.Should().Be(DayOfWeek.Saturday);
-            res.TargetWorkTime.Should().Be(TimeSpan.Zero);
-        }
-
-        [Fact]
-        public void WorkTimeWeekend2609ShouldBeSo0()
-        {
-            var res = _workTimeService.GetWorkTimeForDay(new DateTime(2021, 9, 26));
-            res.Should().BeOfType<WorkTimeDayConfig>();
-            res.WorkDay.Should().Be(DayOfWeek.Sunday);
-            res.TargetWorkTime.Should().Be(TimeSpan.Zero);
-        }
-
-        [Fact]
-        public void WorkTimeFeiertag2610ShouldBeTu0()
-        {
-            var res = _workTimeService.GetWorkTimeForDay(new DateTime(2021, 10, 26));
-            res.Should().BeOfType<WorkTimeDayConfig>();
-            res.WorkDay.Should().Be(DayOfWeek.Tuesday);
-            res.TargetWorkTime.Should().Be(TimeSpan.Zero);
-        }
-
-        [Fact]
-        public void WorkTimeFenstertag2510ShouldBeMo0()
-        {
-            var res = _workTimeService.GetWorkTimeForDay(new DateTime(2021, 10, 25));
-            res.Should().BeOfType<WorkTimeDayConfig>();
-            res.WorkDay.Should().Be(DayOfWeek.Monday);
-            res.TargetWorkTime.Should().Be(TimeSpan.Zero);
-        }
-        #endregion
     }
 }
