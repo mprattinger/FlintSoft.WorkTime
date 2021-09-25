@@ -12,7 +12,7 @@ namespace FlintSoft.WorkTime.Services
 {
     public interface IWorkTimeService
     {
-        WorkTimeDayConfig GetWorkTimeTargetForDay(DateTime date);
+        TimeSpan GetWorkTimeTargetForDay(DateTime date);
         TimeSpan GetTargetPauseForTimeSpan(TimeSpan workTime, bool isFriday = false);
         WorkTimeInfo GetWorkTimeInfo(DateTime workDay, List<CheckInItem> checkInItems);
         (List<(DateTime start, DateTime end)> worked, List<(DateTime start, DateTime end)> paused) PrepareCheckins(List<CheckInItem> checkInItems);
@@ -42,10 +42,20 @@ namespace FlintSoft.WorkTime.Services
 
             try
             {
-                var cfg = GetWorkTimeTargetForDay(workDay);
-
                 //Prepare checkins
                 checkInItems.Sort((c1, c2) => DateTime.Compare(c1.CheckinTime, c2.CheckinTime));
+
+                //Calculate Targets
+                ret.TargetWorkTime = GetWorkTimeTargetForDay(workDay);
+                ret.TargetPauseTime = GetTargetPauseForTimeSpan(ret.TargetWorkTime, workDay.DayOfWeek == DayOfWeek.Friday);
+
+                //Calculate Actual
+                var actualData = PrepareCheckins(checkInItems);
+                ret.WorkedTime = CalculateWorkTime(actualData.worked);
+                ret.PausedTime = CalculatePauseTime(actualData.paused);
+                ret.IsActive = IsActive(checkInItems);
+
+
             }
             catch (Exception)
             {
@@ -57,16 +67,18 @@ namespace FlintSoft.WorkTime.Services
         }
 
         #region Target
-        public WorkTimeDayConfig GetWorkTimeTargetForDay(DateTime date)
+        public TimeSpan GetWorkTimeTargetForDay(DateTime date)
         {
+            var ret = TimeSpan.Zero;
+
             _logger.LogDebug($"Loading target data for workday {date.DayOfWeek}...");
-            var cfg = _config.WorkDays.First(x => x.WorkDay == date.DayOfWeek);
+            ret = _config.WorkDays.First(x => x.WorkDay == date.DayOfWeek).TargetWorkTime;
 
             _logger.LogDebug($"Checking if date is holiday or bridging day...");
             if (_feiertagService.IsFeiertag(date) || _feiertagService.IsFenstertag(date))
-                cfg.TargetWorkTime = TimeSpan.Zero;
+                ret = TimeSpan.Zero;
 
-            return cfg;
+            return ret;
         }
 
         public TimeSpan GetTargetPauseForTimeSpan(TimeSpan workTime, bool isFriday = false)
@@ -138,25 +150,29 @@ namespace FlintSoft.WorkTime.Services
 
         public TimeSpan CalculateWorkTime(List<(DateTime start, DateTime end)> worked)
         {
-            
+            var ret = TimeSpan.Zero;
 
+            ret = new TimeSpan(worked.Select(x => x.end.Subtract(x.start)).Sum(x => x.Ticks));
 
-
-            //var worked = checkInItems
-            //    .Where((x, i) => i == 0 || i % 2 == 1)
-            //    .Select(x => x.CheckinTime)
-            //    .SelectWithPrevious((prev, cur) => cur.Subtract(prev))
-            //    .Sum(x => x.Ticks);
-
-            return TimeSpan.Zero;
+            return ret;
         }
 
         public TimeSpan CalculatePauseTime(List<(DateTime start, DateTime end)> paused)
         {
-            return TimeSpan.Zero;
+            var ret = TimeSpan.Zero;
+
+            ret = new TimeSpan(paused.Select(x => x.end.Subtract(x.start)).Sum(x => x.Ticks));
+
+            return ret;
         }
 
         public bool IsActive(List<CheckInItem> checkInItems) => checkInItems.Count % 2 == 1;
+        #endregion
+
+        #region Diffs
+        #endregion
+
+        #region ETA
         #endregion
     }
 }

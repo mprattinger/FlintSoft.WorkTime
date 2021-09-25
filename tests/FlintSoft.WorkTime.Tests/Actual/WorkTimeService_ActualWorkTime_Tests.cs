@@ -34,65 +34,107 @@ namespace FlintSoft.WorkTime.Tests.Actual
         [Fact]
         public void NoTimeNoWorkTime()
         {
-            //var data = new List<CheckInItem>();
+            var data = new List<CheckInItem>();
 
-            //var res = _workTimeService.CalculateWorkTime(data);
+            var (worked, _) = _workTimeService.PrepareCheckins(data);
 
-            //res.Should().Be(TimeSpan.Zero);
+            var res = _workTimeService.CalculateWorkTime(worked);
+
+            res.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
         public void OneTimeNoWorkTime()
         {
-            //var data = new List<CheckInItem>() {
-            //    new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2021, 09, 23, 6, 11, 0)}
-            //};
+            var data = new List<CheckInItem>() {
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2021, 09, 23, 6, 11, 0)}
+            };
 
-            //var res = _workTimeService.CalculateWorkTime(data);
+            var (worked, _) = _workTimeService.PrepareCheckins(data);
 
-            //res.Should().Be(TimeSpan.Zero);
+            var res = _workTimeService.CalculateWorkTime(worked);
+
+            res.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
         public void TwoTimesWorkTime()
         {
-            //var data = new List<CheckInItem>() {
-            //    new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2021, 9, 23, 6, 11, 0)},
-            //    new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2021, 9, 23, 11, 20, 0)}
-            //};
+            var data = new List<CheckInItem>() {
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 6, 33, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 19, 0)}
+            };
+            var (worked, _) = _workTimeService.PrepareCheckins(data);
 
-            //var res = _workTimeService.CalculateWorkTime(data);
+            var res = _workTimeService.CalculateWorkTime(worked);
 
-            //res.Should().Be(TimeSpan.FromMinutes(309));
+            res.Should().Be(TimeSpan.FromMinutes(286));
         }
 
         [Fact]
-        public void ThreeTimesNoWorkTime()
+        public void ThreeTimesWorkTime()
         {
-            //var data = new List<CheckInItem>() {
-            //    new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2022, 09, 23, 6, 11, 0)},
-            //    new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2022, 09, 23, 11, 20, 0)},
-            //    new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2022, 09, 23, 11, 43, 0)}
-            //};
+            var data = new List<CheckInItem>() {
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 6, 33, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 19, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 36, 0)},
+            };
+            var (worked, _) = _workTimeService.PrepareCheckins(data);
 
-            //var res = _workTimeService.CalculateWorkTime(data);
+            var res = _workTimeService.CalculateWorkTime(worked);
 
-            //res.Should().Be(TimeSpan.FromMinutes(309));
+            res.Should().Be(TimeSpan.FromMinutes(286));
         }
 
         [Fact]
-        public void FourTimesNoWorkTime()
+        public void FourTimesWorkTime()
         {
-            //var data = new List<CheckInItem>() {
-            //    new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2022, 09, 23, 6, 11, 0)},
-            //    new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2022, 09, 23, 11, 20, 0)},
-            //    new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2022, 09, 23, 11, 43, 0)},
-            //    new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2022, 09, 23, 14, 48, 0)}
-            //};
+            var data = new List<CheckInItem>() {
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 6, 33, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 19, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 36, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 14, 47, 0)},
+            };
+            var (worked, _) = _workTimeService.PrepareCheckins(data);
 
-            //var res = _workTimeService.CalculateWorkTime(data);
+            var res = _workTimeService.CalculateWorkTime(worked);
 
-            //res.Should().Be(TimeSpan.FromMinutes(494));
+            res.Should().Be(TimeSpan.FromMinutes(477));
+        }
+
+        [Fact]
+        public void FiveTimesWorkTime()
+        {
+            var data = new List<CheckInItem>() {
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 6, 33, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 19, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 36, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 14, 47, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 15, 01, 0)},
+            };
+            var (worked, _) = _workTimeService.PrepareCheckins(data);
+
+            var res = _workTimeService.CalculateWorkTime(worked);
+
+            res.Should().Be(TimeSpan.FromMinutes(477));
+        }
+
+        [Fact]
+        public void SixTimesWorkTime()
+        {
+            var data = new List<CheckInItem>() {
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 6, 33, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 19, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 36, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 14, 47, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 15, 01, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 15, 37, 0)}
+            };
+            var (worked, _) = _workTimeService.PrepareCheckins(data);
+
+            var res = _workTimeService.CalculateWorkTime(worked);
+
+            res.Should().Be(TimeSpan.FromMinutes(513));
         }
     }
 }

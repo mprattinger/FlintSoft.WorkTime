@@ -4,23 +4,24 @@
 	damit die Arbeitszeit-Daten berechnet werden können.
 	
 	Foldende Information wird geliefert
-		-> Sollarbeitszeit
-		-> Sollpausenzeit
-		-> Geleistete Arbeitszeit
-		-> Geleistete Pausenzeit
+		-> Sollarbeitszeit -> OK
+		-> Sollpausenzeit -> OK
+		-> Geleistete Arbeitszeit -> OK
+		-> Geleistete Pausenzeit -> OK
 		-> Fehlende Arbeitszeit
 		-> Fehlende Pausenzeit
-		-> Status (Aktuell arbeitend)
+		-> Status (Aktuell arbeitend) -> OK
 		-> Zeitpunkt ab dem man Nachhause gehen kann
 
 	-> Für den Tag alle Vorgaben abholen
-		-> Sollarbeitszeit
-		-> Sollpause
+		-> Sollarbeitszeit -> OK
+		-> Sollpause -> OK
 
-	-> Checkins sortieren
-	-> Arbeitszeiten berechnen
+	-> Checkins sortieren -> OK
+	-> Checkins aufbereiten -> OK
+	-> Arbeitszeiten berechnen -> OK
 		-> IDX mod 2 = 1
-	-> Pausen berechnen
+	-> Pausen berechnen -> OK
 		-> IDX mod 2 = 0
-	-> Mitarbeiter noch aktiv?
+	-> Mitarbeiter noch aktiv? -> OK
 		->count mod 2 == 1

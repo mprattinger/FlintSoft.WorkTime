@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -32,6 +31,7 @@ namespace FlintSoft.WorkTime.Tests.Actual
             };
 
             _workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
+        
         }
 
         [Fact]
@@ -113,6 +113,34 @@ namespace FlintSoft.WorkTime.Tests.Actual
             paused.Count.Should().Be(1);
             paused.First().start.Should().Be(new DateTime(2021, 9, 23, 11, 20, 0));
             paused.First().end.Should().Be(new DateTime(2021, 9, 23, 11, 43, 0));
+        }
+
+        [Fact]
+        public void SixTimesWorkTimePauseTime()
+        {
+            var data = new List<CheckInItem>() {
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 6, 33, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 19, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11, 36, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 14, 47, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 15, 01, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 15, 37, 0)}
+            };
+
+            var (worked, paused) = _workTimeService.PrepareCheckins(data);
+
+            worked.Count.Should().Be(3);
+            worked[0].start.Should().Be(new DateTime(2021, 9, 22, 6, 33, 0));
+            worked[0].end.Should().Be(new DateTime(2021, 9, 22, 11, 19, 0));
+            worked[1].start.Should().Be(new DateTime(2021, 9, 22, 11, 36, 0));
+            worked[1].end.Should().Be(new DateTime(2021, 9, 22, 14, 47, 0));
+            worked[2].start.Should().Be(new DateTime(2021, 9, 22, 15, 01, 0));
+            worked[2].end.Should().Be(new DateTime(2021, 9, 22, 15, 37, 0));
+            paused.Count.Should().Be(2);
+            paused.First().start.Should().Be(new DateTime(2021, 9, 22, 11, 19, 0));
+            paused.First().end.Should().Be(new DateTime(2021, 9, 22, 11, 36, 0));
+            paused.Last().start.Should().Be(new DateTime(2021, 9, 22, 14, 47, 0));
+            paused.Last().end.Should().Be(new DateTime(2021, 9, 22, 15, 01, 0));
         }
     }
 }
