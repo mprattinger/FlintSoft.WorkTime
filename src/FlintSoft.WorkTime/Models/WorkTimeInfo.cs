@@ -36,12 +36,17 @@ namespace FlintSoft.WorkTime.Models
         /// <summary>
         /// Remaining time to work
         /// </summary>
-        public TimeSpan WorkTimeMissing { get; set; }
+        public TimeSpan WorkTimeMissing => TargetWorkTime.Subtract(WorkedTime);
 
         /// <summary>
         /// Remaining pause
         /// </summary>
-        public TimeSpan PausTimeMissing { get; set; }
+        public TimeSpan PausTimeMissing => TargetPauseTime.Subtract(PausedTime);
+
+        /// <summary>
+        /// Time of Workstart
+        /// </summary>
+        public DateTime StartOfWork { get; set; }
 
         /// <summary>
         /// Is the person active aka working?

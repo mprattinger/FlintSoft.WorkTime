@@ -55,7 +55,10 @@ namespace FlintSoft.WorkTime.Services
                 ret.PausedTime = CalculatePauseTime(actualData.paused);
                 ret.IsActive = IsActive(checkInItems);
 
+                ret.StartOfWork = checkInItems.First().CheckinTime;
 
+                //Calculate Diffs
+                
             }
             catch (Exception)
             {
@@ -169,10 +172,11 @@ namespace FlintSoft.WorkTime.Services
         public bool IsActive(List<CheckInItem> checkInItems) => checkInItems.Count % 2 == 1;
         #endregion
 
-        #region Diffs
-        #endregion
+        #region ETG
+        public void CalculateTimeToGoHome()
+        {
 
-        #region ETA
+        }
         #endregion
     }
 }

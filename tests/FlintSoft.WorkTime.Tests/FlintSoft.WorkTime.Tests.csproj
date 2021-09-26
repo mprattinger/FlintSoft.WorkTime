@@ -25,4 +25,8 @@
     <ProjectReference Include="..\..\src\FlintSoft.WorkTime\FlintSoft.WorkTime.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ETG\" />
+  </ItemGroup>
+
 </Project>

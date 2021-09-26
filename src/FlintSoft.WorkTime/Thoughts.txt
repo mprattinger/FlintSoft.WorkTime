@@ -8,8 +8,8 @@
 		-> Sollpausenzeit -> OK
 		-> Geleistete Arbeitszeit -> OK
 		-> Geleistete Pausenzeit -> OK
-		-> Fehlende Arbeitszeit
-		-> Fehlende Pausenzeit
+		-> Fehlende Arbeitszeit -> OK
+		-> Fehlende Pausenzeit -> OK
 		-> Status (Aktuell arbeitend) -> OK
 		-> Zeitpunkt ab dem man Nachhause gehen kann
 
@@ -25,3 +25,8 @@
 		-> IDX mod 2 = 0
 	-> Mitarbeiter noch aktiv? -> OK
 		->count mod 2 == 1
+
+	-> Berechnen des Nachhausegeh-Zeitpunkts
+		-> Anhängig vom Eintrittszeitpunk
+		-> Eintritt + Sollarbeit + Sollpause
+		-> Pausen verändern den Zeitpunkt
