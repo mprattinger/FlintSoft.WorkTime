@@ -19,6 +19,7 @@ namespace FlintSoft.WorkTime.Services
         TimeSpan CalculateWorkTime(List<(DateTime start, DateTime end)> worked);
         TimeSpan CalculatePauseTime(List<(DateTime start, DateTime end)> paused);
         bool IsActive(List<CheckInItem> checkInItems);
+        DateTime CalculateTimeToGoHome(WorkTimeInfo info);
     }
 
     public class WorkTimeService : IWorkTimeService
@@ -38,26 +39,36 @@ namespace FlintSoft.WorkTime.Services
 
         public WorkTimeInfo GetWorkTimeInfo(DateTime workDay, List<CheckInItem> checkInItems)
         {
-            WorkTimeInfo ret = null;
+            WorkTimeInfo ret = new();
 
             try
             {
                 //Prepare checkins
                 checkInItems.Sort((c1, c2) => DateTime.Compare(c1.CheckinTime, c2.CheckinTime));
 
+                ret.Day = workDay;
+
                 //Calculate Targets
                 ret.TargetWorkTime = GetWorkTimeTargetForDay(workDay);
                 ret.TargetPauseTime = GetTargetPauseForTimeSpan(ret.TargetWorkTime, workDay.DayOfWeek == DayOfWeek.Friday);
 
                 //Calculate Actual
-                var actualData = PrepareCheckins(checkInItems);
-                ret.WorkedTime = CalculateWorkTime(actualData.worked);
-                ret.PausedTime = CalculatePauseTime(actualData.paused);
+                var (worked, paused) = PrepareCheckins(checkInItems);
+
+                ret.WorkedTime = CalculateWorkTime(worked);
+                
+                ret.PausedTime = CalculatePauseTime(paused);
+                if (ret.PausedTime >= TimeSpan.FromMinutes(10))
+                {
+                    //Ab 10 Minuten Pause werden von der Firma 10 Minuten geschenkt
+                    ret.TargetPauseTime = ret.TargetPauseTime.Subtract(TimeSpan.FromMinutes(10));
+                }
+
                 ret.IsActive = IsActive(checkInItems);
 
                 ret.StartOfWork = checkInItems.First().CheckinTime;
 
-                //Calculate Diffs
+                ret.Time2GoHome = CalculateTimeToGoHome(ret);
                 
             }
             catch (Exception)
@@ -173,9 +184,15 @@ namespace FlintSoft.WorkTime.Services
         #endregion
 
         #region ETG
-        public void CalculateTimeToGoHome()
+        public DateTime CalculateTimeToGoHome(WorkTimeInfo info)
         {
+            var ttgh = info.StartOfWork;
+            if (ttgh == DateTime.MinValue) return DateTime.MinValue;
 
+            ttgh = ttgh.Add(info.WorkedTime).Add(info.WorkTimeMissing < TimeSpan.Zero ? TimeSpan.Zero : info.WorkTimeMissing);
+            ttgh = ttgh.Add(info.PausedTime).Add(info.PausTimeMissing < TimeSpan.FromMinutes(-10) ? TimeSpan.FromMinutes(-10) : info.PausTimeMissing);
+            
+            return ttgh;
         }
         #endregion
     }

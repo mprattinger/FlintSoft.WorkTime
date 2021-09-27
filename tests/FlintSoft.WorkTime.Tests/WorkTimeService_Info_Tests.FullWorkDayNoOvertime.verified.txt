@@ -1,0 +1,9 @@
+﻿{
+  Day: DateTime_1,
+  TargetWorkTime: 08:12:00,
+  TargetPauseTime: 00:20:00,
+  WorkedTime: 08:12:00,
+  PausedTime: 00:20:00,
+  StartOfWork: DateTime_2,
+  Time2GoHome: DateTime_3
+}

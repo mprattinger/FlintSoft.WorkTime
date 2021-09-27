@@ -5,10 +5,13 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using VerifyXunit;
 using Xunit;
 
 namespace FlintSoft.WorkTime.Tests
 {
+    [UsesVerify]
     public class WorkTimeService_Info_Tests
     {
         private readonly IWorkTimeService _workTimeService;
@@ -32,9 +35,22 @@ namespace FlintSoft.WorkTime.Tests
         }
         
         [Fact]
-        public void FullWorkDayNoOvertime()
+        public async Task FullWorkDayNoOvertime()
         {
-            //_workTimeService.GetWorkTimeInfo(new DateTime(2022, 09, 22), TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(12)), TimeSpan.FromMinutes(30));
+            var workDay = new DateTime(2021, 9, 22);
+            var data = new List<CheckInItem>() {
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 9, 22, 6, 0, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 9, 22, 11, 0, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 9, 22, 11, 20, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 9, 22, 14, 32, 0)}
+            };
+
+            var res = _workTimeService.GetWorkTimeInfo(workDay, data);
+
+            await Verifier.Verify(res);
+
+            res.Day.Should().Be(new DateTime(2021, 9, 22));
+            res.Time2GoHome.Should().Be(new DateTime(2021, 9, 22, 14, 32, 0));
         }
     }
 }
