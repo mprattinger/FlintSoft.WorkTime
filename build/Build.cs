@@ -33,10 +33,13 @@ class Build : NukeBuild
     ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
     ///   - Microsoft VSCode           https://nuke.build/vscode
 
-    public static int Main () => Execute<Build>(x => x.Clean);
+    public static int Main () => Execute<Build>(x => x.Push);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
+
+    [Parameter] string NugetApiUrl = "https://api.nuget.org/v3/index.json"; //default
+    [Parameter] string NugetApiKey;
 
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
