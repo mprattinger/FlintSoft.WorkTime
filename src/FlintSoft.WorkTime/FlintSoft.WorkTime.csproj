@@ -4,6 +4,17 @@
     <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Authors>Michael Prattinger</Authors>
+    <Company>FlintSoft</Company>
+    <Product>FlintSoft.WorkTime</Product>
+    <Copyright>(c) Michael Prattinger 2021</Copyright>
+    <RepositoryUrl>https://github.com/mprattinger/FlintSoft.WorkTime</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Arbeitszeit, Info</PackageTags>
+    <Description>Library to calculate the worktime and the remaining time</Description>
+  </PropertyGroup>
   
   <ItemGroup>
     <SupportedPlatform Include="browser" />

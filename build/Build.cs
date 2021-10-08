@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.CI.GitHubActions;
@@ -7,11 +5,11 @@ using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Utilities.Collections;
-using static Nuke.Common.EnvironmentInfo;
+using System;
+using System.Linq;
 using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
@@ -93,8 +91,9 @@ class Build : NukeBuild
     Target Pack => _ => _
         .DependsOn(Publish)
         .Executes(() => {
-
-            DotNetPack(s => s
+            try
+            {
+                DotNetPack(s => s
                 .SetProject(Solution.GetProject("FlintSoft.Worktime"))
                 .SetConfiguration(Configuration)
                 .EnableNoBuild()
@@ -104,6 +103,11 @@ class Build : NukeBuild
                 .SetSymbolPackageFormat(DotNetSymbolPackageFormat.snupkg)
                 .SetOutputDirectory(ArtifactsDirectory)
             );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         });
 
     Target Push => _ => _
