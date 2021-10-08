@@ -35,9 +35,9 @@ class Build : NukeBuild
 
     [Solution] readonly Solution Solution;
     [GitRepository] readonly GitRepository GitRepository;
-    [GitVersion] readonly GitVersion GitVersion;
+    [GitVersion(Framework = "netcoreapp3.1")] readonly GitVersion GitVersion;
 
-    AbsolutePath SourceDirectory => RootDirectory / "src";
+    AbsolutePath SourceDirectory => RootDirectory / "src" / "FlintSoft.WorkTime";
     AbsolutePath TestsDirectory => RootDirectory / "tests";
     AbsolutePath OutputDirectory => RootDirectory / "output";
     AbsolutePath ArtifactsDirectory => RootDirectory / "artifacts";
@@ -91,10 +91,12 @@ class Build : NukeBuild
     Target Pack => _ => _
         .DependsOn(Publish)
         .Executes(() => {
-            try
-            {
+                Console.WriteLine("Conf: " + Configuration);
+                Console.WriteLine("Version: " + GitVersion.NuGetVersionV2);
+                Console.WriteLine("Artifacts: " + ArtifactsDirectory);
+
                 DotNetPack(s => s
-                .SetProject(Solution.GetProject("FlintSoft.Worktime"))
+                .SetProject(Solution.GetProject("FlintSoft.WorkTime"))
                 .SetConfiguration(Configuration)
                 .EnableNoBuild()
                 .EnableNoRestore()
@@ -103,11 +105,7 @@ class Build : NukeBuild
                 .SetSymbolPackageFormat(DotNetSymbolPackageFormat.snupkg)
                 .SetOutputDirectory(ArtifactsDirectory)
             );
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+
         });
 
     Target Push => _ => _
@@ -124,7 +122,8 @@ class Build : NukeBuild
             var nugetApiKey = Environment.GetEnvironmentVariable("NUGET_API_KEY");
             if (string.IsNullOrEmpty(nugetApiKey))
             {
-                throw new Exception("Could not get Nuget Api Key environment variable");
+                //throw new Exception("Could not get Nuget Api Key environment variable");
+                nugetApiKey = "oy2lhlrkigtqzfvwfafqpqfdps3x53cereeip554dmtbrm";
             }
 
             GlobFiles(ArtifactsDirectory, "*.nupkg")
