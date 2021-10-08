@@ -122,8 +122,7 @@ class Build : NukeBuild
             var nugetApiKey = Environment.GetEnvironmentVariable("NUGET_API_KEY");
             if (string.IsNullOrEmpty(nugetApiKey))
             {
-                //throw new Exception("Could not get Nuget Api Key environment variable");
-                nugetApiKey = "oy2lhlrkigtqzfvwfafqpqfdps3x53cereeip554dmtbrm";
+                throw new Exception("Could not get Nuget Api Key environment variable");
             }
 
             GlobFiles(ArtifactsDirectory, "*.nupkg")
