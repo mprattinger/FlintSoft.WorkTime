@@ -27,6 +27,8 @@ namespace FlintSoft.WorkTime.Extensions
             };
 
             services.AddSingleton(cfg);
+
+            services.AddTransient<IWorkTimeService, WorkTimeService>();
         }
     }
 }
