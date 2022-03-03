@@ -11,11 +11,13 @@ namespace FlintSoft.WorkTime.Tests.Actual
 {
     public class WorkTimeService_IsActive_Tests
     {
-        private readonly IWorkTimeService _workTimeService;
+        private readonly WorkTimeConfig _cfg;
+
+        //private readonly IWorkTimeService _workTimeService;
 
         public WorkTimeService_IsActive_Tests()
         {
-            var cfg = new WorkTimeConfig
+            _cfg = new WorkTimeConfig
             {
                 WorkDays = new List<WorkTimeDayConfig>() {
                     new WorkTimeDayConfig() { WorkDay = DayOfWeek.Monday, TargetWorkTime = TimeSpan.FromHours(8.2) },
@@ -28,15 +30,19 @@ namespace FlintSoft.WorkTime.Tests.Actual
                 }
             };
 
-            _workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
+            //_workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
         }
 
         [Fact]
         public void NoTimeNotActive()
         {
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 22, 8, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
             var data = new List<CheckInItem>();
 
-            var res = _workTimeService.IsActive(data);
+            var res = sut.IsActive(data);
 
             res.Should().BeFalse();
         }
@@ -44,11 +50,15 @@ namespace FlintSoft.WorkTime.Tests.Actual
         [Fact]
         public void OneTimeActive()
         {
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 22, 7, 11, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
             var data = new List<CheckInItem>() {
-                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2021, 09, 23,6,11,0)}
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22,6,11,0)}
             };
 
-            var res = _workTimeService.IsActive(data);
+            var res = sut.IsActive(data);
 
             res.Should().BeTrue();
         }
@@ -56,12 +66,16 @@ namespace FlintSoft.WorkTime.Tests.Actual
         [Fact]
         public void TwoTimesNotActive()
         {
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 22, 12, 20, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
             var data = new List<CheckInItem>() {
-                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2021, 9, 23,6, 11,0)},
-                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2021, 09, 23,11,20,0)}
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 9, 22,6, 11,0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22,11,20,0)}
             };
 
-            var res = _workTimeService.IsActive(data);
+            var res = sut.IsActive(data);
 
             res.Should().BeFalse();
         }
@@ -69,13 +83,17 @@ namespace FlintSoft.WorkTime.Tests.Actual
         [Fact]
         public void ThreeTimesActive()
         {
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 22, 12, 43, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
             var data = new List<CheckInItem>() {
-                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2021, 09, 23,6,11,0)},
-                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2021, 09, 23, 11,20,0)},
-                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 23), CheckinTime = new DateTime(2021, 09, 23, 11,43,0)}
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22,6,11,0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11,20,0)},
+                new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 09, 22, 11,43,0)}
             };
 
-            var res = _workTimeService.IsActive(data);
+            var res = sut.IsActive(data);
 
             res.Should().BeTrue();
         }

@@ -11,11 +11,12 @@ namespace FlintSoft.WorkTime.Tests.Target
 {
     public class WorkTimeService_WorkTimeTarget_Tests
     {
-        private readonly IWorkTimeService _workTimeService;
+        private readonly WorkTimeConfig _cfg;
+        //private readonly IWorkTimeService _workTimeService;
 
         public WorkTimeService_WorkTimeTarget_Tests()
         {
-            var cfg = new WorkTimeConfig
+            _cfg = new WorkTimeConfig
             {
                 WorkDays = new List<WorkTimeDayConfig>() {
                     new WorkTimeDayConfig() { WorkDay = DayOfWeek.Monday, TargetWorkTime = TimeSpan.FromHours(8.2) },
@@ -28,48 +29,72 @@ namespace FlintSoft.WorkTime.Tests.Target
                 }
             };
 
-            _workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
+            //_workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
         }
 
         [Fact]
         public void WorkTimeNormalDay2209ShouldBeWed820()
         {
-            var res = _workTimeService.GetWorkTimeTargetForDay(new DateTime(2021, 9, 22));
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetWorkTimeTargetForDay(new DateTime(2021, 9, 22));
             res.Should().Be(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(12)));
         }
 
         [Fact]
         public void WorkTimeNormalDay2409ShouldBeFr542()
         {
-            var res = _workTimeService.GetWorkTimeTargetForDay(new DateTime(2021, 9, 24));
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetWorkTimeTargetForDay(new DateTime(2021, 9, 24));
             res.Should().Be(TimeSpan.FromHours(5).Add(TimeSpan.FromMinutes(42)));
         }
 
         [Fact]
         public void WorkTimeWeekend2509ShouldBeSa0()
         {
-            var res = _workTimeService.GetWorkTimeTargetForDay(new DateTime(2021, 9, 25));
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetWorkTimeTargetForDay(new DateTime(2021, 9, 25));
             res.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
         public void WorkTimeWeekend2609ShouldBeSo0()
         {
-            var res = _workTimeService.GetWorkTimeTargetForDay(new DateTime(2021, 9, 26));
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetWorkTimeTargetForDay(new DateTime(2021, 9, 26));
             res.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
         public void WorkTimeFeiertag2610ShouldBeTu0()
         {
-            var res = _workTimeService.GetWorkTimeTargetForDay(new DateTime(2021, 10, 26));
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetWorkTimeTargetForDay(new DateTime(2021, 10, 26));
             res.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
         public void WorkTimeFenstertag2510ShouldBeMo0()
         {
-            var res = _workTimeService.GetWorkTimeTargetForDay(new DateTime(2021, 10, 25));
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetWorkTimeTargetForDay(new DateTime(2021, 10, 25));
             res.Should().Be(TimeSpan.Zero);
         }
 

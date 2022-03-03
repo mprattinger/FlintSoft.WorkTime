@@ -15,7 +15,7 @@ namespace FlintSoft.WorkTime.Services
         TimeSpan GetWorkTimeTargetForDay(DateTime date);
         TimeSpan GetTargetPauseForTimeSpan(TimeSpan workTime, bool isFriday = false);
         WorkTimeInfo GetWorkTimeInfo(DateTime workDay, List<CheckInItem> checkInItems);
-        (List<(DateTime start, DateTime end)> worked, List<(DateTime start, DateTime end)> paused) PrepareCheckins(List<CheckInItem> checkInItems);
+        (List<(DateTime start, DateTime end)> worked, List<(DateTime start, DateTime end)> paused) PrepareCheckins(List<CheckInItem> checkInItems, bool useNow = false);
         TimeSpan CalculateWorkTime(List<(DateTime start, DateTime end)> worked);
         TimeSpan CalculatePauseTime(List<(DateTime start, DateTime end)> paused);
         bool IsActive(List<CheckInItem> checkInItems);
@@ -27,14 +27,17 @@ namespace FlintSoft.WorkTime.Services
         private readonly ILogger<WorkTimeService> _logger;
         private readonly IFeiertagService _feiertagService;
         private readonly WorkTimeConfig _config;
+        private readonly ISystemTime _systemTime;
 
         public WorkTimeService(ILogger<WorkTimeService> logger,
             IFeiertagService feiertagService,
-            WorkTimeConfig config)
+            WorkTimeConfig config,
+            ISystemTime systemTime)
         {
             _logger = logger;
             _feiertagService = feiertagService;
             _config = config;
+            _systemTime = systemTime;
         }
 
         public WorkTimeInfo GetWorkTimeInfo(DateTime workDay, List<CheckInItem> checkInItems)
@@ -124,7 +127,7 @@ namespace FlintSoft.WorkTime.Services
         #endregion
 
         #region Actual
-        public (List<(DateTime start, DateTime end)> worked, List<(DateTime start, DateTime end)> paused) PrepareCheckins(List<CheckInItem> checkInItems)
+        public (List<(DateTime start, DateTime end)> worked, List<(DateTime start, DateTime end)> paused) PrepareCheckins(List<CheckInItem> checkInItems, bool useNow = false)
         {
             var worked = new List<(DateTime start, DateTime end)>();
             var paused = new List<(DateTime start, DateTime end)>();
@@ -156,6 +159,16 @@ namespace FlintSoft.WorkTime.Services
                         paused.Add(currPaused);
                         currPaused = new();
                     }
+                }
+            }
+
+            if(useNow)
+            {
+                if(currWorked.start != DateTime.MinValue && currWorked.end == DateTime.MinValue)
+                {
+                    //Offenes Ende -> aktuelle Zeit nehmen
+                    currWorked.end = _systemTime.Now;
+                    worked.Add(currWorked);
                 }
             }
 

@@ -11,11 +11,12 @@ namespace FlintSoft.WorkTime.Tests.Target
 {
     public class WorkTimeService_PauseTarget_Tests
     {
-        private readonly IWorkTimeService _workTimeService;
+        private readonly WorkTimeConfig _cfg;
+        //private readonly IWorkTimeService _workTimeService;
 
         public WorkTimeService_PauseTarget_Tests()
         {
-            var cfg = new WorkTimeConfig
+            _cfg = new WorkTimeConfig
             {
                 WorkDays = new List<WorkTimeDayConfig>() {
                     new WorkTimeDayConfig() { WorkDay = DayOfWeek.Monday, TargetWorkTime = TimeSpan.FromHours(8.2) },
@@ -28,83 +29,127 @@ namespace FlintSoft.WorkTime.Tests.Target
                 }
             };
 
-            _workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
+            //_workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
         }
 
         [Fact]
         public void PauseTarget30MinWhenMoreThen6()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(12)));
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.FromHours(8).Add(TimeSpan.FromMinutes(12)));
             res.Should().Be(TimeSpan.FromMinutes(30));
         }
 
         [Fact]
         public void PauseTarget30MinWhen6()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6));
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6));
             res.Should().Be(TimeSpan.FromMinutes(30));
         }
 
         [Fact]
         public void PauseTarget0MinWhenLessThen6AndNoFriday()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.FromHours(5));
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.FromHours(5));
             res.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
         public void PauseTarget0MinWhen0AndNoFriday()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.Zero);
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.Zero);
             res.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
         public void PauseTarget0MinWhenLessThen6AndFriday()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.FromHours(5), true);
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.FromHours(5), true);
             res.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
         public void PauseTarget0MinWhen0AndFriday()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.Zero, true);
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.Zero, true);
             res.Should().Be(TimeSpan.Zero);
         }
 
         [Fact]
         public void PauseTarget15MinWhenBtw6And615AndFriday()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(13)), true);
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(13)), true);
             res.Should().Be(TimeSpan.FromMinutes(15));
         }
 
         [Fact]
         public void PauseTarget15MinWhenBtw6And61AndFriday()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(1)), true);
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(1)), true);
             res.Should().Be(TimeSpan.FromMinutes(15));
         }
 
         [Fact]
         public void PauseTarget17MinWhen617AndFriday()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(17)), true);
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(17)), true);
             res.Should().Be(TimeSpan.FromMinutes(17));
         }
 
         [Fact]
         public void PauseTarget30MinWhen630AndFriday()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(30)), true);
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(30)), true);
             res.Should().Be(TimeSpan.FromMinutes(30));
         }
 
         [Fact]
         public void PauseTarget30MinWhenMore630AndFriday()
         {
-            var res = _workTimeService.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(45)), true);
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 23, 08, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var res = sut.GetTargetPauseForTimeSpan(TimeSpan.FromHours(6).Add(TimeSpan.FromMinutes(45)), true);
             res.Should().Be(TimeSpan.FromMinutes(30));
         }
     }

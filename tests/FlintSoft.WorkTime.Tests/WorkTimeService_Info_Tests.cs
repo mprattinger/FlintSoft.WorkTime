@@ -14,11 +14,12 @@ namespace FlintSoft.WorkTime.Tests
     [UsesVerify]
     public class WorkTimeService_Info_Tests
     {
-        private readonly IWorkTimeService _workTimeService;
+        private readonly WorkTimeConfig _cfg;
+        //private readonly IWorkTimeService _workTimeService;
 
         public WorkTimeService_Info_Tests()
         {
-            var cfg = new WorkTimeConfig
+            _cfg = new WorkTimeConfig
             {
                 WorkDays = new List<WorkTimeDayConfig>() {
                     new WorkTimeDayConfig() { WorkDay = DayOfWeek.Monday, TargetWorkTime = TimeSpan.FromHours(8.2) },
@@ -31,12 +32,16 @@ namespace FlintSoft.WorkTime.Tests
                 }
             };
 
-            _workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
+            //_workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
         }
         
         [Fact]
         public async Task FullWorkDayNoOvertime()
         {
+            var systemTime = new MockSystemTime(new DateTime(2021, 09, 22, 15, 00, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
             var workDay = new DateTime(2021, 9, 22);
             var data = new List<CheckInItem>() {
                 new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 9, 22, 6, 0, 0)},
@@ -45,7 +50,7 @@ namespace FlintSoft.WorkTime.Tests
                 new CheckInItem() { CheckInDate = new DateTime(2021, 09, 22), CheckinTime = new DateTime(2021, 9, 22, 14, 32, 0)}
             };
 
-            var res = _workTimeService.GetWorkTimeInfo(workDay, data);
+            var res = sut.GetWorkTimeInfo(workDay, data);
 
             await Verifier.Verify(res);
 
