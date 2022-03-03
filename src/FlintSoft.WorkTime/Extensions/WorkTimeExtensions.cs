@@ -1,5 +1,6 @@
 ﻿using FlintSoft.Tools.Feiertage;
 using FlintSoft.WorkTime.Models;
+using FlintSoft.WorkTime.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,8 @@ namespace FlintSoft.WorkTime.Extensions
             };
 
             services.AddSingleton(cfg);
-            services.AddSingleton<ISystemTime, SystemTime>();
+
+            services.AddTransient<IWorkTimeService, WorkTimeService>();
         }
     }
 }

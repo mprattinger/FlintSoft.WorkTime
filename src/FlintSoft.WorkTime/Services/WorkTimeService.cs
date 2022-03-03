@@ -203,7 +203,7 @@ namespace FlintSoft.WorkTime.Services
             if (ttgh == DateTime.MinValue) return DateTime.MinValue;
 
             ttgh = ttgh.Add(info.WorkedTime).Add(info.WorkTimeMissing < TimeSpan.Zero ? TimeSpan.Zero : info.WorkTimeMissing);
-            ttgh = ttgh.Add(info.PausedTime).Add(info.PausTimeMissing < TimeSpan.FromMinutes(-10) ? TimeSpan.FromMinutes(-10) : info.PausTimeMissing);
+            ttgh = ttgh.Add(info.PausedTime).Add(info.PauseTimeMissing < TimeSpan.FromMinutes(-10) ? TimeSpan.FromMinutes(-10) : info.PauseTimeMissing);
             
             return ttgh;
         }

@@ -41,7 +41,7 @@ namespace FlintSoft.WorkTime.Models
         /// <summary>
         /// Remaining pause
         /// </summary>
-        public TimeSpan PausTimeMissing => TargetPauseTime.Subtract(PausedTime);
+        public TimeSpan PauseTimeMissing => TargetPauseTime.Subtract(PausedTime);
 
         /// <summary>
         /// Time of Workstart
