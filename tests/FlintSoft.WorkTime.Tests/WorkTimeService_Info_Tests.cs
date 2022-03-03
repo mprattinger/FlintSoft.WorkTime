@@ -15,7 +15,6 @@ namespace FlintSoft.WorkTime.Tests
     public class WorkTimeService_Info_Tests
     {
         private readonly WorkTimeConfig _cfg;
-        //private readonly IWorkTimeService _workTimeService;
 
         public WorkTimeService_Info_Tests()
         {
@@ -31,8 +30,6 @@ namespace FlintSoft.WorkTime.Tests
                     new WorkTimeDayConfig() { WorkDay = DayOfWeek.Sunday, TargetWorkTime = TimeSpan.Zero }
                 }
             };
-
-            //_workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
         }
         
         [Fact]
