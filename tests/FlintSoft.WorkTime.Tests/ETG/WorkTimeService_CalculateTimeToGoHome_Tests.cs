@@ -13,7 +13,6 @@ namespace FlintSoft.WorkTime.Tests.ETG
     public class WorkTimeService_CalculateTimeToGoHome_Tests
     {
         private readonly WorkTimeConfig _cfg;
-        //private readonly IWorkTimeService _workTimeService;
 
         public WorkTimeService_CalculateTimeToGoHome_Tests()
         {
@@ -29,8 +28,6 @@ namespace FlintSoft.WorkTime.Tests.ETG
                     new WorkTimeDayConfig() { WorkDay = DayOfWeek.Sunday, TargetWorkTime = TimeSpan.Zero }
                 }
             };
-
-            //_workTimeService = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), cfg);
         }
 
         [Fact]

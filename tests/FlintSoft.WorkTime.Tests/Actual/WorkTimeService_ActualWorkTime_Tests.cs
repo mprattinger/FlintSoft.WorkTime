@@ -13,8 +13,6 @@ namespace FlintSoft.WorkTime.Tests.Actual
     {
         private WorkTimeConfig _cfg;
 
-        //private readonly IWorkTimeService _workTimeService;
-
         public WorkTimeService_ActualWorkTime_Tests()
         {
             _cfg = new WorkTimeConfig
