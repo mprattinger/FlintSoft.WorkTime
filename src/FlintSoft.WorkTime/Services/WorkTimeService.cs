@@ -56,7 +56,7 @@ namespace FlintSoft.WorkTime.Services
                 ret.TargetPauseTime = GetTargetPauseForTimeSpan(ret.TargetWorkTime, workDay.DayOfWeek == DayOfWeek.Friday);
 
                 //Calculate Actual
-                var (worked, paused) = PrepareCheckins(checkInItems);
+                var (worked, paused) = PrepareCheckins(checkInItems, true);
 
                 ret.WorkedTime = CalculateWorkTime(worked);
                 
