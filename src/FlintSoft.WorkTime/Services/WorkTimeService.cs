@@ -202,9 +202,20 @@ namespace FlintSoft.WorkTime.Services
             var ttgh = info.StartOfWork;
             if (ttgh == DateTime.MinValue) return DateTime.MinValue;
 
-            ttgh = ttgh.Add(info.WorkedTime).Add(info.WorkTimeMissing < TimeSpan.Zero ? TimeSpan.Zero : info.WorkTimeMissing);
+            if (info.WorkedTime > info.TargetWorkTime)
+            {
+                //Overtime!
+                ttgh = ttgh.Add(info.TargetWorkTime);
+                //ttgh = ttgh.Add(info.PausedTime);
+            }
+            else
+            {
+                ttgh = ttgh.Add(info.WorkedTime).Add(info.WorkTimeMissing < TimeSpan.Zero ? TimeSpan.Zero : info.WorkTimeMissing);
+                //ttgh = ttgh.Add(info.PausedTime).Add(info.PauseTimeMissing < TimeSpan.FromMinutes(-10) ? TimeSpan.FromMinutes(-10) : info.PauseTimeMissing);
+            }
+
             ttgh = ttgh.Add(info.PausedTime).Add(info.PauseTimeMissing < TimeSpan.FromMinutes(-10) ? TimeSpan.FromMinutes(-10) : info.PauseTimeMissing);
-            
+
             return ttgh;
         }
         #endregion

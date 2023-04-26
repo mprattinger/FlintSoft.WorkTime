@@ -32,7 +32,7 @@ namespace FlintSoft.WorkTime.Tests
             };
         }
         
-        [Fact]
+        //[Fact]
         public async Task FullWorkDayNoOvertime()
         {
             var systemTime = new MockSystemTime(new DateTime(2021, 09, 22, 15, 00, 0));

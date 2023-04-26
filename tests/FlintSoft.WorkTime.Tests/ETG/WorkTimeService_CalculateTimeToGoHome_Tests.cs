@@ -310,6 +310,48 @@ namespace FlintSoft.WorkTime.Tests.ETG
             res.Should().Be(new DateTime(2021, 9, 22, 14, 42, 0));
         }
 
+        [Fact]
+        public void TTGHOverTime()
+        {
+            var systemTime = new MockSystemTime(new DateTime(2023, 04, 25, 16, 55, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var workDay = new DateTime(2021, 9, 22);
+            var data = new List<CheckInItem>() {
+                new CheckInItem() { CheckInDate = new DateTime(2023, 04, 25), CheckinTime = new DateTime(2023, 4, 25, 6, 42, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2023, 04, 25), CheckinTime = new DateTime(2023, 4, 25, 10, 55, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2023, 04, 25), CheckinTime = new DateTime(2023, 4, 25, 11, 46, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2023, 04, 25), CheckinTime = new DateTime(2023, 4, 25, 12, 14, 0)},
+                new CheckInItem() { CheckInDate = new DateTime(2023, 04, 25), CheckinTime = new DateTime(2023, 4, 25, 12, 39, 0)}
+            };
+
+            var info = prepareDataWithCurrent(sut, workDay, data);
+
+            var res = sut.CalculateTimeToGoHome(info);
+
+            res.Should().Be(new DateTime(2023, 04, 25, 16, 0, 0));
+        }
+
+        [Fact]
+        public void TTGHOverTimeNoPause()
+        {
+            var systemTime = new MockSystemTime(new DateTime(2023, 04, 25, 16, 55, 0));
+
+            var sut = new WorkTimeService(new NullLogger<WorkTimeService>(), new FeiertagService(), _cfg, systemTime);
+
+            var workDay = new DateTime(2021, 9, 22);
+            var data = new List<CheckInItem>() {
+                new CheckInItem() { CheckInDate = new DateTime(2023, 04, 25), CheckinTime = new DateTime(2023, 4, 25, 6, 42, 0)}
+            };
+
+            var info = prepareDataWithCurrent(sut, workDay, data);
+
+            var res = sut.CalculateTimeToGoHome(info);
+
+            res.Should().Be(new DateTime(2023, 04, 25, 15, 24, 0));
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "<Pending>")]
         private WorkTimeInfo prepareData(WorkTimeService wService, DateTime workDay, List<CheckInItem> data)
         {
@@ -333,8 +375,6 @@ namespace FlintSoft.WorkTime.Tests.ETG
             info.IsActive = wService.IsActive(data);
             
             info.StartOfWork = data.FirstOrDefault() == null ? DateTime.MinValue : data.FirstOrDefault().CheckinTime;
-
-
 
             return info;
         }
@@ -362,8 +402,6 @@ namespace FlintSoft.WorkTime.Tests.ETG
             info.IsActive = wService.IsActive(data);
 
             info.StartOfWork = data.FirstOrDefault() == null ? DateTime.MinValue : data.FirstOrDefault().CheckinTime;
-
-
 
             return info;
         }
