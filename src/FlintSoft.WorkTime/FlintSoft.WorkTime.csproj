@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Authors>Michael Prattinger</Authors>
     <Company>FlintSoft</Company>
     <Product>FlintSoft.WorkTime</Product>
@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <PackageReference Include="FlintSoft.Tools.Feiertage" Version="0.1.13" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.6" />
   </ItemGroup>
 
 </Project>

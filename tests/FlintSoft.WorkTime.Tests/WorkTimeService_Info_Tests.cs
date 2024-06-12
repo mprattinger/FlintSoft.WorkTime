@@ -11,7 +11,6 @@ using Xunit;
 
 namespace FlintSoft.WorkTime.Tests
 {
-    [UsesVerify]
     public class WorkTimeService_Info_Tests
     {
         private readonly WorkTimeConfig _cfg;
