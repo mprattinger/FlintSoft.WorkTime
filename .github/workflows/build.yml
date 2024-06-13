@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
 on:
   workflow_dispatch:
   push:
@@ -29,3 +31,29 @@ jobs:
       - name: Show Version
         run: |
           echo ${{ env.semVer }}
+      
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+
+      - name: Restore
+        run: dotnet restore
+      
+      - name: Compile
+        run: dotnet build --configuration Release --no-restore
+      
+      - name: Test
+        run: dotnet test
+
+      - name: Publish
+        run: dotnet publish --configuration Release -p:Version=${{ env.semVer }} -o ${{ github.workspace }}/output
+
+      - name: List builded files
+        run: ls ${{ github.workspace }}/output
+
+      - name: Pack to nuget
+        run: dotnet pack --configuration Release --no-restore --no-build --include-symbols --artifacts-path ${{ github.workspace }}/output -o ${{ github.workspace }}/artifacts
+
+      - name: List packed files
+        run: ls ${{ github.workspace }}/artifacts
