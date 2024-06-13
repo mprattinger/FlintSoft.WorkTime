@@ -1,0 +1,30 @@
+name: publish
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+  
+  jobs:
+    build_job:
+      runs-on: ubuntu-latest
+
+      steps:
+      - name: checkout
+        uses: actions/checkout@v4
+      
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v1.1.1
+        with:
+          versionSpec: '5.x'
+      
+      - name: Determine Version
+        uses: gittools/actions/gitversion/execute@v1.1.1
+        id: version
+        with:
+          useConfigFile: true
+          configFilePath: GitVersion.yml
+      
+      - name: Show Version
+        run: |
+          echo ${{ env.semVer }}

@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31702.278
+# Visual Studio Version 17
+VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlintSoft.WorkTime", "src\FlintSoft.WorkTime\FlintSoft.WorkTime.csproj", "{5DAFA975-7566-443D-B7D1-570B8CF734D1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{BAD50B99-3565-49B0-B8FE-C6B0EA831195}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlintSoft.WorkTime.Tests", "tests\FlintSoft.WorkTime.Tests\FlintSoft.WorkTime.Tests.csproj", "{EFA7B9BC-08A3-4366-9C1C-5D22355DEABA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlintSoft.WorkTime.Tests", "tests\FlintSoft.WorkTime.Tests\FlintSoft.WorkTime.Tests.csproj", "{EFA7B9BC-08A3-4366-9C1C-5D22355DEABA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,8 +17,6 @@ Global
 		{5DAFA975-7566-443D-B7D1-570B8CF734D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DAFA975-7566-443D-B7D1-570B8CF734D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DAFA975-7566-443D-B7D1-570B8CF734D1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BAD50B99-3565-49B0-B8FE-C6B0EA831195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BAD50B99-3565-49B0-B8FE-C6B0EA831195}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EFA7B9BC-08A3-4366-9C1C-5D22355DEABA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EFA7B9BC-08A3-4366-9C1C-5D22355DEABA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EFA7B9BC-08A3-4366-9C1C-5D22355DEABA}.Release|Any CPU.ActiveCfg = Release|Any CPU
