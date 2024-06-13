@@ -47,7 +47,7 @@ jobs:
         run: dotnet test
 
       - name: Publish
-        run: dotnet publish --configuration Release start -p:Version=${{ env.semVer }} -o ${{ github.workspace }}/output
+        run: dotnet publish --configuration Release -p:Version=${{ env.semVer }} -o ${{ github.workspace }}/output
 
       - name: Pack to nuget
         run: dotnet pack ${{ github.workspace }}/src/FlintSoft.WorkTime/FlintSoft.WorkTime.csproj --configuration Release --no-restore --no-build --include-symbols -p:Version=${{ env.semVer }} -o ${{ github.workspace }}/artifacts
