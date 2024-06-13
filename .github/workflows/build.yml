@@ -54,3 +54,7 @@ jobs:
 
       - name: List packed files
         run: ls ${{ github.workspace }}/artifacts
+
+      - name: Push packages
+        run: dotnet nuget
+        
