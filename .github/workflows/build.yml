@@ -52,8 +52,8 @@ jobs:
       - name: List builded files
         run: ls ${{ github.workspace }}/output
 
-      - name: Pack to nuget
-        run: dotnet pack ~/src/Flintsoft.WorkTime/Flintsoft.WorkTime.csproj --configuration Release --no-restore --no-build --include-symbols --artifacts-path ${{ github.workspace }}/output -o ${{ github.workspace }}/artifacts
+      - name: Current dir
+        run: pwd
 
-      - name: List packed files
-        run: ls ${{ github.workspace }}/artifacts
+      - name: Current dir ls
+        run: ls
