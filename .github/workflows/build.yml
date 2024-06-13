@@ -41,19 +41,16 @@ jobs:
         run: dotnet restore
       
       - name: Compile
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build --configuration Release --no-restore -p:Version=${{ env.semVer }}
       
       - name: Test
         run: dotnet test
 
       - name: Publish
-        run: dotnet publish --configuration Release -p:Version=${{ env.semVer }} -o ${{ github.workspace }}/output
-
-      - name: List builded files
-        run: ls ${{ github.workspace }}/output
+        run: dotnet publish --configuration Release start -p:Version=${{ env.semVer }} -o ${{ github.workspace }}/output
 
       - name: Pack to nuget
-        run: dotnet pack ${{ github.workspace }}/src/FlintSoft.WorkTime/FlintSoft.WorkTime.csproj --configuration Release --no-restore --no-build --include-symbols --artifacts-path ${{ github.workspace }}/output -o ${{ github.workspace }}/artifacts
+        run: dotnet pack ${{ github.workspace }}/src/FlintSoft.WorkTime/FlintSoft.WorkTime.csproj --configuration Release --no-restore --no-build --include-symbols -p:Version=${{ env.semVer }} -o ${{ github.workspace }}/artifacts
 
       - name: List packed files
         run: ls ${{ github.workspace }}/artifacts
