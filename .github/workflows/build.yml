@@ -56,5 +56,5 @@ jobs:
         run: ls ${{ github.workspace }}/artifacts
 
       - name: Push packages
-        run: dotnet nuget
+        run: dotnet nuget push ${{ github.workspace }}/artifacts/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
         
