@@ -14,7 +14,6 @@ using static Nuke.Common.IO.FileSystemTasks;
 using static Nuke.Common.IO.PathConstruction;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
-[CheckBuildProjectConfigurations]
 [ShutdownDotNetAfterServerBuild]
 [GitHubActions("ci",
     GitHubActionsImage.UbuntuLatest,
@@ -45,10 +44,11 @@ class Build : NukeBuild
     Target Clean => _ => _
         .Executes(() =>
         {
-            SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-            TestsDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-            EnsureCleanDirectory(OutputDirectory);
-            EnsureCleanDirectory(ArtifactsDirectory);
+            SourceDirectory
+            .GlobDirectories("**/bin", "**/obj").ForEach(x => x.DeleteDirectory());
+            TestsDirectory.GlobDirectories("**/bin", "**/obj").ForEach(x => x.DeleteDirectory());
+            OutputDirectory.CreateOrCleanDirectory();
+            ArtifactsDirectory.CreateOrCleanDirectory();
         });
 
     Target Restore => _ => _
@@ -93,7 +93,7 @@ class Build : NukeBuild
         .Executes(() => {
                 Console.WriteLine("Conf: " + Configuration);
                 Console.WriteLine("Version: " + GitVersion.NuGetVersionV2);
-                Console.WriteLine("Artifacts: " + ArtifactsDirectory);
+                Console.WriteLine("Artifacts: " + ArtifactsDirectory.Name);
 
                 DotNetPack(s => s
                 .SetProject(Solution.GetProject("FlintSoft.WorkTime"))
@@ -125,16 +125,16 @@ class Build : NukeBuild
                 throw new Exception("Could not get Nuget Api Key environment variable");
             }
 
-            GlobFiles(ArtifactsDirectory, "*.nupkg")
-               .NotEmpty()
-               .Where(x => !x.EndsWith("symbols.nupkg"))
-               .ForEach(x =>
-               {
-                   DotNetNuGetPush(s => s
+            ArtifactsDirectory
+            .GlobFiles("*.nupkg")
+            .Where(x => !x.Name.EndsWith("symbols.nupkg"))
+            .ForEach(x =>
+            {
+                DotNetNuGetPush(s => s
                        .SetTargetPath(x)
                        .SetSource(nugetUrl)
                        .SetApiKey(nugetApiKey)
                    );
-               });
+            });
         });
 }
